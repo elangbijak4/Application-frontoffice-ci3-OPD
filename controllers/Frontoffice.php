@@ -465,31 +465,68 @@ class Frontoffice extends CI_Controller {
 				$coba[$key][4]=' readonly ';
 			}
 
-			$coba[18][7]='Sekretariat '.$this->config->item('nama_opd').'';
-			$coba[20][7]='dibaca';
-			$coba[22][7]=implode("-",array (date("d/m/Y"),mt_rand (1000,9999),microtime()));
-			$coba[29][4]='';
-			$coba[29][0]='combo_database';
-			$coba[29][7]=array("nama_urgensi_surat","nama_urgensi_surat",'urgensi_surat'); //inshaa Allah gunakan ini sekarang untuk mendefinisikan combo_database, soalnya core sudah dirubah.
-			$coba[29][8]=$surat[0][28];
-			$coba[19][4]='';
-			$coba[19][0]='area';
-			$coba[20][4]='';
-			$coba[20][0]='combo_database';
-			$coba[20][7]=array("nama_status","nama_status",'status_surat'); //inshaa Allah gunakan ini sekarang untuk mendefinisikan combo_database, soalnya core sudah dirubah.
-			$coba[18][4]='';
-			$coba[18][6]='<b>Diteruskan ke</b>';
-			$coba[18][0]='combo_database';
-			$coba[18][7]=array("target","target",'target_surat'); //inshaa Allah gunakan ini sekarang untuk mendefinisikan combo_database, soalnya core sudah dirubah.
+			#perbaikan 26 agustus 2020
+			/**
+			 * Filosofi di fungsi verifikasi ini, admin boleh membaca saja, tetapi
+			 * - bisa menentukan status surat 
+			 * - bisa mengarahkan kemana surat 
+			 * - bisa menambahkan keterangan dan 
+			 * - bisa menentukan urgensi surat
+			 * Selain itu semuanya readonly.
+			 * Juga bahwa sembunyikan beberapa kolom yang memusingkan admin.
+			 */
+
+			#perbaikan 25 agustus 2020
+			//Hilangkan kolom-kolom yang memusingkan admin.
+			$coba[21][0]='hidden';
+			$coba[22][0]='hidden';
+			$coba[23][0]='hidden';
+			$coba[24][0]='hidden';
+			$coba[25][0]='hidden';
+			$coba[26][0]='hidden';
+			$coba[29][0]='hidden';
 			
+			#perbaikan 26 agustus 2020
+			#START
+
+			//Buka agar admin bisa menambahkan keterangan.
+			$coba[18][4]=''; 
+			$coba[18][0]='area';
+
+			//Buka agar admin bisa memberitahu sekretariat surat mau diarahkan kemana.
+			$coba[17][4]=''; 
+			$coba[17][8]='Sekretariat '.$this->config->item('nama_opd').'';
+			$coba[17][6]='<b>Diteruskan ke</b>';
+			$coba[17][0]='combo_database';
+			$coba[17][7]=array("target","target",'target_surat'); //inshaa Allah gunakan ini sekarang untuk mendefinisikan combo_database, soalnya core sudah dirubah.
+			
+			//Buka agar admin bisa menambahkan status surat.
+			$coba[19][4]='';
+			$coba[19][0]='combo_database';
+			$coba[19][7]=array("nama_status","nama_status",'status_surat');
+
+			//timestamp masuk
+			$coba[20][7]='dibaca';
+			$coba[20][7]=implode("-",array (date("d/m/Y"),mt_rand (1000,9999),microtime()));
+
+			//posisi surat terakhir
+			$coba[26][7]='Front Office BPSDM';
+
+			//Urgensi surat, dibuka agar admin bisa menyatakan urgensinya
+			$coba[28][4]='';
+			$coba[28][0]='combo_database';
+			$coba[28][7]=array("nama_urgensi_surat","nama_urgensi_surat",'urgensi_surat'); //inshaa Allah gunakan ini sekarang untuk mendefinisikan combo_database, soalnya core sudah dirubah.
+			$coba[28][8]=$surat[0][28]; //inshaa Allah gunakan ini sekarang untuk mendefinisikan combo_database, soalnya core sudah dirubah.
+			
+			#END
 
 			$komponen=$coba;
 			$atribut_form='';
 			$array_option='';
 			$atribut_table=array('table'=>"class=\"table table-condensed\"",'tr'=>"",'td'=>"",'th'=>"");
 			//deskripsi untuk tombol ke-i, $tombol[$i]=array($type 0,$nama_komponen 1,$class 2,$id 3,$atribut 4,$event 5,$label 6,$nilai_awal 7, $value_selected_combo 8 tetapi untuk tombol dia adalah target_ajax yang bisa berbeda dengan target_ajax form)
-			$src_surat=$this->enkripsi->strToHex($this->enkripsi->enkripSimetri_data($coba[16][7]));
-			$src_berkas=$this->enkripsi->strToHex($this->enkripsi->enkripSimetri_data($coba[17][7]));
+			$src_surat=$this->enkripsi->strToHex($this->enkripsi->enkripSimetri_data($coba[15][7]));
+			$src_berkas=$this->enkripsi->strToHex($this->enkripsi->enkripSimetri_data($coba[16][7]));
 			$tombol[0]=array('button_ajax_pdf','button01','btn btn-info','button01','','myModal_baca_surat','Membuka Surat...','Baca Surat',"Frontoffice/tesopenpdf/".$src_surat);
 			$tombol[1]=array('button_ajax_pdf','button11','btn btn-info','button11','','myModal_baca_berkas','Membaca Berkas...','Baca Berkas Pendukung',"Frontoffice/tesopenpdf/".$src_berkas);
 			$tombol[2]=array('submit','submit','btn btn-primary','submit','','','Surat dan berkas sedang dimuat ke memori','Teruskan','');
