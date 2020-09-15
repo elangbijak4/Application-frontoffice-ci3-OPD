@@ -2985,6 +2985,50 @@ class Viewfrommyframework {
             $i='';
             $j=$this->CI->session->userdata('i');
             $this->CI->session->set_userdata('i',$j+1);
+            echo "<input type=\"file\" style=\"margin-bottom:5px;width:100%;\" class=\"".$class."\" id=\"".$id.$i."\" name=\"".$nama_komponen.$i."\" ".$atribut." ".$event." value=\"".$value."\"><button type=\"button\" id=\"tambah".$id.$i."\" style=\"width:100%;\" class=\"btn btn-sm btn-success shadow-sm\"><i class='fas fa-plus fa-sm text-white-100'></i> Tambah file</button>";
+            //array_push($perekam_id,rekam($type,$nama_komponen,$class,$id,$atribut,$event,$label,$value=''));
+            $class_transfer=$this->CI->enkripsi->strToHex($class);
+            $id_transfer=$this->CI->enkripsi->strToHex($id);
+            $nama_komponen_transfer=$this->CI->enkripsi->strToHex($nama_komponen);
+            echo "
+            <center>
+                <div id='pra_tambah_file".$id.$i."' style='width:40%;display:none;' align='center' >
+                <div class='progress' style='margin-bottom:10px;height:20px;'>
+                <div class='progress-bar progress-bar-striped active' role='progressbar' aria-valuenow='90' aria-valuemin='0' aria-valuemax='100' style='width:100%'>
+                mohon tunggu...
+                </div>
+                </div>
+                </div>
+            </center>
+            <div id=penampil_tambah_file".$id.$i." align='center' style='width:100%;'></div>
+            ";
+            echo "
+            <script>
+                $(document).ready(function(){
+                    $(\"#tambah".$id.$i."\").click(function(){
+                    var loading = $(\"#pra_tambah_file".$id.$i."\");
+                    var tampilkan = $(\"#penampil_tambah_file".$id.$i."\");
+                    var button = $(\"#tambah".$id.$i."\");
+                    var limit=$(\"#quantity\").val();
+                    tampilkan.hide();
+                    loading.fadeIn(); 
+                    $.post('".site_url("/Frontoffice/tambah_file")."',{ class:\"".$class_transfer."\", id:\"".$id_transfer."\", nama_komponen:\"".$nama_komponen_transfer."\" },
+                    function(data,status){
+                        loading.fadeOut();
+                        button.fadeOut();
+                        tampilkan.html(data);
+                        tampilkan.fadeIn(2000);
+                    });
+                    });
+                    });
+                </script>
+            ";    
+            break;
+        case ("multi-file-OLD"):
+            is_array($value)?$value='':NULL;
+            $i='';
+            $j=$this->CI->session->userdata('i');
+            $this->CI->session->set_userdata('i',$j+1);
             echo "<input type=\"file\" style=\"margin-bottom:5px\" class=\"".$class."\" id=\"".$id.$i."\" name=\"".$nama_komponen.$i."\" ".$atribut." ".$event." value=\"".$value."\"><button type=\"button\" id=\"tambah".$id.$i."\" style=\"width:100%;\" class=\"btn btn-sm btn-success shadow-sm\"><i class='fas fa-plus fa-sm text-white-100'></i> Tambah file</button>";
             //array_push($perekam_id,rekam($type,$nama_komponen,$class,$id,$atribut,$event,$label,$value=''));
             $class_transfer=$this->CI->enkripsi->strToHex($class);

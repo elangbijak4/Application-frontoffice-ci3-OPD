@@ -55,6 +55,13 @@ class Model_frommyframework extends CI_Model
     }
 
     public function update_style_CI_no_alert($tabel,$kolom_rujukan,$data){ //inshaa Allah letakkan handler error disini lan.
+        //format $data adalah: $data[$kolom_target]=$nilai_kolom_target;
+        $this->db->where($kolom_rujukan['nama_kolom'], $kolom_rujukan['nilai']);
+        ($this->db->update($tabel, $data))? $ok=TRUE: $ok=FALSE;
+        return $ok;
+    }
+
+    public function update_style_CI_no_alert_OLD($tabel,$kolom_rujukan,$data){ //inshaa Allah letakkan handler error disini lan.
         $this->db->where($kolom_rujukan['nama_kolom'], $kolom_rujukan['nilai']);
         ($this->db->update($tabel, $data))? $ok=TRUE: $ok=FALSE;
     }

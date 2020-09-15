@@ -141,7 +141,7 @@ class Frontoffice extends CI_Controller {
 				  var limit=$(\"#quantity\").val();
                   tampilkan.hide();
                   loading.fadeIn(); 
-                  $.post('".site_url("/Frontoffice/tampil_tabel_cruid_new/".$table."/".$nama_kolom_id."/desc/")."'+limit,{ data:\"okbro\"},
+                  $.post('".site_url("/Frontoffice/tampil_tabel_cruid_new_verifikasi/".$table."/".$nama_kolom_id."/desc/")."'+limit,{ data:\"okbro\"},
                   function(data,status){
                     loading.fadeOut();
                     tampilkan.html(data);
@@ -199,7 +199,7 @@ class Frontoffice extends CI_Controller {
 							var limit=$(\"#quantity\").val();
 							tampilkan.hide();
 							loading.fadeIn(); 
-							$.post('".site_url("/Frontoffice/tampil_tabel_cruid_new/".$table."/".$nama_kolom_id."/desc/")."'+limit+'/'+$current_pagePrevious+'/'+$page_awalPrevious+'/'+$jumlah_page_tampil,{ data:\"okbro\"},
+							$.post('".site_url("/Frontoffice/tampil_tabel_cruid_new_verifikasi/".$table."/".$nama_kolom_id."/desc/")."'+limit+'/'+$current_pagePrevious+'/'+$page_awalPrevious+'/'+$jumlah_page_tampil,{ data:\"okbro\"},
 							function(data,status){
 								loading.fadeOut();
 								tampilkan.html(data);
@@ -230,7 +230,7 @@ class Frontoffice extends CI_Controller {
 						var limit=$(\"#quantity\").val();
 						tampilkan.hide();
 						loading.fadeIn(); 
-						$.post('".site_url("/Frontoffice/tampil_tabel_cruid_new/".$table."/".$nama_kolom_id."/desc/")."'+limit+'/'+$i+'/'+$page_awal+'/'+$jumlah_page_tampil,{ data:\"okbro\"},
+						$.post('".site_url("/Frontoffice/tampil_tabel_cruid_new_verifikasi/".$table."/".$nama_kolom_id."/desc/")."'+limit+'/'+$i+'/'+$page_awal+'/'+$jumlah_page_tampil,{ data:\"okbro\"},
 						function(data,status){
 							loading.fadeOut();
 							tampilkan.html(data);
@@ -253,7 +253,7 @@ class Frontoffice extends CI_Controller {
 						var limit=$(\"#quantity\").val();
 						tampilkan.hide();
 						loading.fadeIn(); 
-						$.post('".site_url("/Frontoffice/tampil_tabel_cruid_new/".$table."/".$nama_kolom_id."/desc/")."'+limit+'/'+$i+'/'+$page_awal+'/'+$jumlah_page_tampil,{ data:\"okbro\"},
+						$.post('".site_url("/Frontoffice/tampil_tabel_cruid_new_verifikasi/".$table."/".$nama_kolom_id."/desc/")."'+limit+'/'+$i+'/'+$page_awal+'/'+$jumlah_page_tampil,{ data:\"okbro\"},
 						function(data,status){
 							loading.fadeOut();
 							tampilkan.html(data);
@@ -287,7 +287,7 @@ class Frontoffice extends CI_Controller {
 						var limit=$(\"#quantity\").val();
 						tampilkan.hide();
 						loading.fadeIn(); 
-						$.post('".site_url("/Frontoffice/tampil_tabel_cruid_new/".$table."/".$nama_kolom_id."/desc/")."'+limit+'/'+$current_page+'/'+$page_awal+'/'+$jumlah_page_tampil,{ data:\"okbro\"},
+						$.post('".site_url("/Frontoffice/tampil_tabel_cruid_new_verifikasi/".$table."/".$nama_kolom_id."/desc/")."'+limit+'/'+$current_page+'/'+$page_awal+'/'+$jumlah_page_tampil,{ data:\"okbro\"},
 						function(data,status){
 							loading.fadeOut();
 							tampilkan.html(data);
@@ -356,7 +356,7 @@ class Frontoffice extends CI_Controller {
 						var jumlah_page_tampil=$jumlah_page_tampil;
 						tampilkan.hide();
 						loading.fadeIn(); 
-						$.post('".site_url("/Frontoffice/tampil_tabel_cruid_new/".$table."/".$nama_kolom_id."/desc/")."'+limit+'/'+page+'/'+page_awal+'/'+jumlah_page_tampil,{ data:\"okbro\"},
+						$.post('".site_url("/Frontoffice/tampil_tabel_cruid_new_verifikasi/".$table."/".$nama_kolom_id."/desc/")."'+limit+'/'+page+'/'+page_awal+'/'+jumlah_page_tampil,{ data:\"okbro\"},
 						function(data,status){
 							loading.fadeOut();
 							tampilkan.html(data);
@@ -424,7 +424,7 @@ class Frontoffice extends CI_Controller {
 
 						tampilkan.hide();
 						loading.fadeIn(); 
-						$.post('".site_url("/Frontoffice/tampil_tabel_cruid_new/".$table."/".$nama_kolom_id."/desc/")."'+limit+'/'+page+'/'+page_awal+'/'+jumlah_page_tampil+'/TRUE/'+kolom_cari+'/'+nilai_kolom_cari,{ data:\"okbro\"},
+						$.post('".site_url("/Frontoffice/tampil_tabel_cruid_new_verifikasi/".$table."/".$nama_kolom_id."/desc/")."'+limit+'/'+page+'/'+page_awal+'/'+jumlah_page_tampil+'/TRUE/'+kolom_cari+'/'+nilai_kolom_cari,{ data:\"okbro\"},
 						function(data,status){
 							loading.fadeOut();
 							tampilkan.html(data);
