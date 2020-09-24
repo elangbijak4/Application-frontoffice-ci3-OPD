@@ -12796,7 +12796,7 @@ class Frontoffice extends CI_Controller {
 			break;
 			case ("rincian_penampil_tabel_surat_keluar") :
 				$json=json_decode($this->enkripsi->dekapsulasiData($_POST['data_json']));
-				//print_r($json);
+				//print_r($json); //nkk3
 				$surat=$this->user_defined_query_controller_as_array($query="select * from surat_keluar where idsurat_keluar=".$json->idsurat_keluar,$token="andisinra");
 				if(!$surat){
 					alert('Surat yang dimaksud tidak tercatat');
@@ -13144,6 +13144,20 @@ class Frontoffice extends CI_Controller {
 					if($kiriman[13]) {$kiriman[15]=$directory_relatif_file_upload.$upload1[0];}else{$kiriman[15]=NULL;}
 					if($kiriman[14]) {$kiriman[16]=$directory_relatif_file_upload.$upload2[0];}else{$kiriman[16]=NULL;}
 
+					//Perubahan 24/09/2020 : 21:23
+					$data_pdf=array();
+					foreach($data_post as $key=>$k){
+						if($key=='nomor_surat_masuk'){
+							$data_pdf["Nomor surat masuk"]=$data_post['nomor_surat_masuk']['nilai'];
+						}else if($key=='ditujukan_ke'){
+							$data_pdf["Tujuan"]=$data_post['ditujukan_ke']['nilai'];
+						}else if($key=='pengirim'){
+							$data_pdf["Nama pengirim"]=$data_post['pengirim']['nilai'];
+						}else if($key=='timestamp_masuk'){
+							$data_pdf["Tanggal masuk berkas"]=implode(" ",array (date("d/m/Y")," Jam:".date("h:i:sa")));
+						}
+					}
+
 					//Tanda tangan sebelum ada idsurat_masuk dalam basisdata, tapi buat nanti tand atangan dengan cara memeriksa ulang di basisdata setelah abru saja terjadi insersi
 					//agar diketahui idsurat_masuk, untuk yang ini hanya percobaan saja sementara.
 					//signatur diluar kolom id, simple_signature, digest_signature, diluar kolom timestamp selain timestamp_masuk, dispose, keterangan, status_surat.
@@ -13151,6 +13165,7 @@ class Frontoffice extends CI_Controller {
 					$signature=$this->enkripsi->simplesignature_just_hashing($persiapan_signature);
 					$data_post=array_merge($data_post,array('simple_signature'=>array('nilai'=>$signature,'file'=>NULL)));
 					$kiriman[29]=hash('ripemd160',$signature);
+					$data_pdf["signature"]=$kiriman[29];
 
 					//print_r($kiriman);
 					//print_r($data_post);
@@ -13182,9 +13197,12 @@ class Frontoffice extends CI_Controller {
 				array_push($upload,$upload1);
 				array_push($upload,$upload2);
 				$data_upload['data_upload']=$upload;
-				$data_upload['src']="Frontoffice/pdf/".$this->enkripsi->strToHex(serialize($data_post))."/".$this->enkripsi->strToHex(serialize($date_note));
+				$data_upload['src']="Frontoffice/pdf/".$this->enkripsi->strToHex(serialize($data_pdf))."/".$this->enkripsi->strToHex(serialize($date_note));
+				
+				//End Perubahan 24/09/2020 : 21:23
+				
 				//print_r($data_upload);
-				$this->load->view('index',$data_upload);
+				$this->load->view('index',$data_upload);// nkk
 			} else {
 				$data_upload['data_upload']=NULL;
 				$this->load->view('index',$data_upload);
@@ -13426,7 +13444,7 @@ class Frontoffice extends CI_Controller {
 		echo "<iframe id=\"target_pdf\" name=\"target_pdf\" src=\"".site_url($src)."\" style=\"left:5%;right:5%;top:5%;bottom:5%;border:0px solid #000;position:absolute;width:90%;height:70%\"></iframe>";
 	}
 	
-	//Fungsi ini dipanggil oleh halaman index.php di view secara asinkron lewat iframe
+	//Fungsi ini dipanggil oleh halaman index.php di view secara asinkron lewat iframe, pemanggilnya adalah penampil_iframe_pdf()
 	//ditampilkan setelah user selesai dan berhasil unggah surat atau berkas, sebagai nota unggah
 	public function pdf($data_kiriman,$date_note){
 			$data_kiriman=unserialize($this->enkripsi->hexToStr($data_kiriman));
@@ -13434,14 +13452,43 @@ class Frontoffice extends CI_Controller {
 			$data_key=array_keys($data_kiriman);
 			$data=array(
 				'NOTA UNGGAH SURAT DAN BERKAS',
-				'RINCIAN SURAT DAN BERKAS YANG TERUNGGAH:'
+				' '
 			);
-			foreach($data_key as $k){
-				$temp=$k.": ".$data_kiriman[$k]['nilai'];
-				array_push($data,$temp);
+			
+			//Perubahan 24/09/2020 : 21:23
+			//Query nilai ID data berdasarkan nilai signature signature
+			$temp0=NULL;
+			//foreach ($coba as $row){echo "<br>".$row['username'];}user_defined_query_controller_as_array
+			$id_current=$this->user_defined_query_controller("select max(idsurat_masuk) as maxi from surat_masuk",$token="andisinra");
+			//$RowRecordset=$id_current->fetch(PDO::FETCH_ASSOC); //mmmm jangan gunakan fetch(PDO::FETCH_ASSOC) karena sudah dilakukan di file model, jadinya dobel, tinggal pake saja, di model dia FETCH_BOTH
+			foreach($id_current as $isi){
+				$temp0=$isi["maxi"]; 
+				//Hasil ini aneh, untuk fungsi aggregat max, dia bisa menarik dengan cepat nilai hampir bersamaan dengan nilai dimasukkan
+				//tetapi jika query biasa untuk menemukan nilai idsurat_masuk melalui where digest_signature, malah hasilnya kosong, seperti belum tersimpan di tabel.
+				//Ini berarti agregat lebih cepat proses hitungnya, karena idsurat_masuk autoincrement sehingga server basisdata lebih dulu menghitungnya.
+				//tetapi ini mungkin berbahaya untuk akses yang sibuk pada hostingan, karena itu masih perlu diselidiki.
 			}
-			$date_note=array(' ','Makassar ',date("d/m/Y"),'Tertanda:','Frontoffice Sistem Terintegrasi '.$this->config->item('nama_opd').' Provinsi Sulawesi Selatan');
+			//foreach ($RowRecordset as $isi) {
+			//	$temp0=$isi;
+			//}
+			//$x=intval($temp0)+1;
+			array_push($data,"");
+			array_push($data,'RINCIAN SURAT DAN BERKAS YANG TERUNGGAH:');
+			$temp="Id Berkas".": ".$temp0;
+			array_push($data,$temp);
+			foreach($data_key as $k){
+				if($k!=="signature"){
+					$temp=$k.": ".$data_kiriman[$k];
+					array_push($data,$temp);
+				}
+			}
+
+			$date_note=array(' ','Makassar ',date("d/m/Y"),'Frontoffice Sistem Terintegrasi '.$this->config->item('nama_opd').' Provinsi Sulawesi Selatan',"Tanda tangan: ".$data_kiriman["signature"]);
 			$data=array_merge($data,$date_note);
+			//$data["Tanda tangan"]="Tanda tangan: ".$data_kiriman["signature"];
+			
+			//End Perubahan 24/09/2020 : 21:23
+
 			cetak_tiket_pdf($data);
 	}
 	
@@ -14253,7 +14300,7 @@ class Frontoffice extends CI_Controller {
 			$RowRecordset1=$Recordset1->fetch(PDO::FETCH_ASSOC);
 			if($coba){
 				for($i=0;$i<sizeof($coba);$i++){
-					$coba[$i][7]=$RowRecordset1[$key_combo[$i]];
+					$coba[$i][7]=$RowRecordset1[$key_combo[$i]];// nkk2
 					$coba[$i][8]='';
 				}
 			}
